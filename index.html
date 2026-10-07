@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nafisa, how much do you love me?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffe3ec;--card:#fff8fb;--ink:#4a1d3a;--pink:#ff5c93;--deep:#c43a6c;--butter:#ffd86b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1124;--card:#3b1a33;--ink:#ffe3ec}}
+:root[data-theme="dark"]{--bg:#2a1124;--card:#3b1a33;--ink:#ffe3ec}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
+.wrap{width:100%;max-width:480px;padding:18px 16px}
+.card{background:var(--card);border-radius:30px;padding:26px 20px;text-align:center;box-shadow:0 7px 0 var(--pink)}
+h1{font-size:1.9rem;line-height:1.15;margin:6px 0 10px}
+p{margin:8px 0;font-size:1.1rem;line-height:1.5}
+.big{font-size:4rem;line-height:1;margin:0}
+button{font:inherit;font-weight:600;font-size:1.15rem;background:var(--pink);color:#fff;border:0;border-radius:999px;padding:13px 26px;cursor:pointer;box-shadow:0 4px 0 var(--deep);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--deep)}
+button:focus-visible{outline:3px solid var(--butter);outline-offset:2px}
+.alt{background:var(--card);color:var(--ink);border:3px solid var(--pink);box-shadow:0 4px 0 var(--pink)}
+.opts{position:relative;height:230px;margin-top:10px}
+.opts button{position:absolute;left:50%;transform:translateX(-50%);width:84%;transition:top .15s,left .15s}
+#o1{top:0}#o2{top:76px}#o3{top:152px}
+.meter{height:34px;border-radius:99px;background:var(--bg);border:3px solid var(--pink);overflow:hidden;margin:14px 0}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--butter));transition:width .08s}
+#tap{width:170px;height:170px;border-radius:50%;font-size:4.5rem;padding:0;box-shadow:0 8px 0 var(--deep)}
+#tap:active{box-shadow:0 2px 0 var(--deep);transform:translateY(6px) scale(.97)}
+.hud{display:flex;justify-content:space-between;font-weight:600}
+.hide{display:none!important}
+.rank{display:inline-block;background:var(--butter);color:#4a1d3a;border-radius:99px;padding:6px 18px;font-weight:600;font-size:1.2rem;margin:6px 0}
+.letter{text-align:left;margin-top:12px}
+.pulse{animation:pl 1s ease-in-out infinite}
+@keyframes pl{50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Intro -->
+  <section id="s0" class="card">
+    <p class="big pulse">💌</p>
+    <h1>Nafisa, I have a very important question...</h1>
+    <p>Ready for a tiny challenge?</p>
+    <button id="b0">I'm ready 😌</button>
+  </section>
+
+  <!-- Question -->
+  <section id="s1" class="card hide">
+    <h1>How much do you love me?</h1>
+    <p>Choose wisely, Nafisa 👀</p>
+    <div class="opts">
+      <button id="o1" class="alt">Not much 😏</button>
+      <button id="o2" class="alt">A little bit</button>
+      <button id="o3">SO MUCH 💖</button>
+    </div>
+  </section>
+
+  <!-- Challenge -->
+  <section id="s2" class="card hide">
+    <h1>Prove it! 🔥</h1>
+    <p>Tap the heart as fast as you can for 10 seconds to fill the love meter.</p>
+    <div class="hud"><span id="time">10.0s</span><span id="cnt">0 taps</span></div>
+    <div class="meter"><i id="fill"></i></div>
+    <button id="tap" aria-label="Tap the heart">💗</button>
+    <p id="hint">Tap to start!</p>
+  </section>
+
+  <!-- Result -->
+  <section id="s3" class="card hide">
+    <p class="big">🥹</p>
+    <h1 id="pct"></h1>
+    <div class="rank" id="rank"></div>
+    <div class="letter">
+      <p>Nafisa, you didn't need a game to prove it, I already know. You're my favorite person, my safe place, and the reason I smile at my phone like a goof.</p>
+      <p>I love you more than the meter can count. 💕</p>
+    </div>
+    <p style="margin-top:16px"><button id="again">Beat your score</button></p>
+  </section>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function show(n){for(let i=0;i<4;i++)$('s'+i).classList.toggle('hide',i!==n)}
+$('b0').onclick=()=>show(1);
+
+// Runaway buttons
+let tries=0;
+function run(btn,msgs){
+  const box=btn.parentElement,w=box.clientWidth,h=box.clientHeight;
+  btn.style.left=(15+Math.random()*70)+'%';
+  btn.style.top=Math.random()*(h-56)+'px';
+  tries++;
+  if(msgs&&tries<6)btn.textContent=msgs[tries%msgs.length];
+}
+['o1','o2'].forEach((id,i)=>{
+  const b=$(id),m=i?['Maybe?','Okay okay','Hehe no 🙈']:['Nope!','Too slow 😜','Can\'t catch me','Try again!'];
+  b.addEventListener('pointerenter',()=>run(b,m));
+  b.addEventListener('pointerdown',e=>{e.preventDefault();run(b,m)});
+  b.addEventListener('click',e=>e.preventDefault());
+});
+$('o3').onclick=()=>{show(2);reset()};
+
+// Tap challenge
+let taps=0,running=false,end=0,raf=0;
+function reset(){taps=0;running=false;cancelAnimationFrame(raf);
+  $('cnt').textContent='0 taps';$('time').textContent='10.0s';$('fill').style.width='0';$('hint').textContent='Tap to start!'}
+function tick(){
+  const left=Math.max(0,end-performance.now());
+  $('time').textContent=(left/1000).toFixed(1)+'s';
+  if(left<=0){finish();return}
+  raf=requestAnimationFrame(tick);
+}
+$('tap').addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  if(!running){running=true;end=performance.now()+10000;$('hint').textContent='Go go go!!';tick()}
+  taps++;
+  $('cnt').textContent=taps+' taps';
+  $('fill').style.width=Math.min(100,taps/80*100)+'%';
+});
+function finish(){
+  running=false;
+  const pct=Math.round(taps/80*100);
+  const ranks=[[0,'Warm hug 🧸'],[25,'Big smooch 💋'],[45,'Cuddle champion 🐻'],[65,'Soulmate level 💞'],[80,'Infinity and beyond 🚀']];
+  let r=ranks[0][1];for(const [t,n] of ranks)if(taps>=t)r=n;
+  $('pct').textContent=(pct>=100?'Love meter: overflowing! ':'Love meter: ')+pct+'%';
+  $('rank').textContent=r;
+  show(3);
+}
+$('again').onclick=()=>{show(2);reset()};
+</script>
+</body>
+</html>
